@@ -87,3 +87,5 @@ merge2 <- left_join(merge1, age, by = c("NA"), copy = FALSE)
 merge3 <- left_join(merge2, eth, by = c("NA."), copy = FALSE)
 names(merge3)[3] <- "NA..1"
 merge4e <- left_join(merge3, occ, by = c("NA..1"), copy = FALSE)
+
+setwd(Code)

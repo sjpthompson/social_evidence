@@ -2,8 +2,6 @@
 ## Part two of the code creates the 'sector integration ratio' - proportion of each demographic group working in a sector, divided by proportion of total age group working in a sector (just for 25-44 year-olds)
 ##
 
-setwd(Data)
-
 #Removing total variables (except occupations where we remove the non-totals) and only keeping 25-44 year-olds
 
 merge4 <- merge4e[ which(merge4e$AGE!=7 & merge4e$ETH!=7 & merge4e$AGE!=6 & merge4e$AGE!=5 & merge4e$AGE!=4 & merge4e$AGE!=1 & merge4e$SOC==10), ]

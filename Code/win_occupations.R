@@ -2,8 +2,6 @@
 ## proportion of each demographic group working in high-skilled occcupations in a given sector, 
 ## divided by the proportion of all workers in the sector working in high-skilled occupations
 
-setwd(Data)
-
 #removing total variables and keeping only 25-44s
 
 merge4 <- merge4e[ which(merge4e$AGE!=7 & merge4e$ETH!=7 & merge4e$AGE!=6 & merge4e$AGE!=5 & merge4e$AGE!=4 & merge4e$AGE!=1 & merge4e$SOC!=10), ]
@@ -13,59 +11,64 @@ merge4 <- merge4e[ which(merge4e$AGE!=7 & merge4e$ETH!=7 & merge4e$AGE!=6 & merg
 merge4$occ <- 0
 merge4$occ[merge4$SOC==1|merge4$SOC==2] <- 1
 
-#summarise by occs
-
-
 #gather the sector data
 
 mergeG <- gather(merge4, "AE", "C", "F_", "G", "H", "I", "K", "L", "N", "O", "P", "RU", "x58","x61", "x62", "x69", "x70", "x71", "x72", "x73", "x74", "x86","x87", key = "sector", value = "number")
 
-#reducing the occupational data into our two categories
+#summing by broad (low/high skill) occupational categories - gives one row for every demographic group for each sector and for high/low occupations
 
-merge4e <- 
-  mergeG %>% 
-  group_by(gender, ETH, sector, occ) %>% 
-  summarise (groupocc = sum(number))
+mergeoccs <-
+  mergeG%>%
+  group_by(gender, ETH, sector, occ) %>%
+  summarise(groupocc = sum(number))
 
-#creating total number of jobs in each sector for each occupational group
+#creating total number of jobs in each sector for each demographic group
 
-merge5e <- 
-  merge4e %>% 
+mergeoccTG <- 
+  mergeoccs %>% 
   group_by(gender, ETH, sector) %>% 
   summarise (groupT = sum(groupocc))
 
-#creating total number of jobs in each sector for the two occupational groups
-
-merge4s <-
-  mergeG %>% 
-  group_by(sector, occ) %>% 
-  summarise (occsT = sum(number))
-
 #creating total number of jobs in each sector
 
-merge4t <-
-  mergeG %>% 
+mergeoccTT <-
+  mergeoccs %>% 
   group_by(sector) %>% 
-  summarise (sectorT = sum(number))
+  summarise (sectorT = sum(groupocc))
 
-#keeping total number of high skilled jobs in each sector
+#creating total number of jobs in each sector for the two occupational groups
 
-socS <- merge4s[ which(merge4s$occ==1), ]
+mergeoccTS <-
+  mergeoccs %>% 
+  group_by(sector, occ) %>% 
+  summarise (occsT = sum(groupocc))
 
 #keeping total number of high skilled jobs in each sector for each demographic group
 
-socG <- merge4e[ which(merge4e$occ==1), ]
+socG <- mergeoccs[ which(mergeoccs$occ==1), ]
+
+#keeping total number of high skilled jobs in each sector 
+
+socS <- mergeoccTS[ which(mergeoccTS$occ==1), ]
 
 #merge high-skilled jobs in each sector with total jobs in each sector, create proportion
 
-totalS <- left_join(socS, merge4t,by=c("sector"))
+totalS <- left_join(socS, mergeoccTT,by=c("sector"))
 totalS$HpropS <- totalS$occsT/totalS$sectorT
 
 #merge high-skilled jobs in each sector with total jobs in each sector for each demographic group
 # create proportion
 
-totalG <- left_join(socG, merge5e,by=c("sector"))
+totalG <- left_join(socG, mergeoccTG,by=c("gender", "ETH", "sector"))
 totalG$HpropG <- totalG$groupocc/totalG$groupT
 
+#merge the two proportions together, calculate ratio 
 
+occupations0 <- left_join(totalG, totalS, by=c("sector"))
+occupations0$repratio <- occupations0$HpropG/occupations0$HpropS
+
+#make a final table with only the data we need
+
+myvars <- c("gender", "ETH", "sector", "repratio")
+occupations <- occupations0[myvars]
 
