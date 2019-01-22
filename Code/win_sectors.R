@@ -4,7 +4,7 @@
 
 #Removing total variables (except occupations where we remove the non-totals) and only keeping 25-44 year-olds
 
-merge4 <- merge4e[ which(merge4e$AGE==AGE & merge4e$ETH!=7 & merge4e$SOC==10), ]
+merge4 <- merge4e[ which((merge4e$AGE==AGE1|merge4e$AGE==AGE2) & merge4e$ETH!=7 & merge4e$SOC==10), ]
 
 #putting into a long format
 
@@ -43,3 +43,13 @@ sector <- left_join(sector0, mergeST, by=c("sector"))
 #calculate representation ratio
 
 sector$repratio <- (sector$sectorG/sector$groupT)/(sector$sectorT/sector$workforce)
+
+myvars <- c("gender", "ETH", "sector", "repratio")
+sector0 <- sector[myvars]
+sector <- spread(sector0, sector, repratio)
+
+setwd(Output)
+
+write.csv(occupations, file="Sectors.csv", row.names=FALSE)
+
+setwd(Code)

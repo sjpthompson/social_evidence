@@ -4,7 +4,7 @@
 
 #removing total variables and keeping only 25-44s
 
-merge4 <- merge4e[ which(merge4e$AGE!=7 & merge4e$ETH!=7 & merge4e$AGE!=6 & merge4e$AGE!=5 & merge4e$AGE!=4 & merge4e$AGE!=1 & merge4e$SOC!=10), ]
+merge4 <- merge4e[ which((merge4e$AGE==AGE1|merge4e$AGE==AGE2) & merge4e$ETH!=7 & merge4e$SOC!=10), ]
 
 #recode of occupational data into high and low skilled jobs
 
@@ -70,5 +70,11 @@ occupations0$repratio <- occupations0$HpropG/occupations0$HpropS
 #make a final table with only the data we need
 
 myvars <- c("gender", "ETH", "sector", "repratio")
-occupations <- occupations0[myvars]
+occupations1 <- occupations0[myvars]
+occupations <- spread(occupations1, sector, repratio)
 
+setwd(Output)
+
+write.csv(occupations, file="Occupations.csv", row.names=FALSE)
+
+setwd(Code)
