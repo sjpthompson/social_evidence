@@ -44,12 +44,14 @@ sector <- left_join(sector0, mergeST, by=c("sector"))
 
 sector$repratio <- (sector$sectorG/sector$groupT)/(sector$sectorT/sector$workforce)
 
+#calculate share of workforce in each sector
+
 myvars <- c("gender", "ETH", "sector", "repratio")
 sector0 <- sector[myvars]
 sector <- spread(sector0, sector, repratio)
 
 setwd(Output)
 
-write.csv(occupations, file="Sectors.csv", row.names=FALSE)
+write.csv(sector, file="Sectors.csv", row.names=FALSE)
 
 setwd(Code)

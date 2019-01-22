@@ -15,8 +15,8 @@ source("win_cleaning.R")
 
 # Use this to specify an age group - if using one enter into both AGE1 and AGE2
 
-AGE1 <- 1
-AGE2 <- 1
+AGE1 <- 4
+AGE2 <- 5
 
 source("win_sectors.r")
 

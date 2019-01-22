@@ -15,7 +15,7 @@ eth <- read.xlsx("lookups.xls", 5, startRow=1)
 
 aps0 <- aps[ which(aps$GOVTOF==8), ]
 aps2 <- left_join(aps0, age, by = c("AAGE"))
-aps3 <- left_join(aps1, eth, by = c("ETHEWEUL"))
+aps3 <- left_join(aps2, eth, by = c("ETHEWEUL"))
 aps2 <- aps3[ which(aps3$AGE==AGE1|aps3$AGE==AGE2), ]
 
 #creating totals
@@ -48,7 +48,7 @@ table0$Unemployment_rate <- table0$UNEMP/(table0$EMP + table0$UNEMP)
 
 # saving output
 
-myvars <- c("SEX", "ETH", "sector", "Employment_rate", "Unemployment_rate", "DEMOG")
+myvars <- c("SEX", "ETH", "Employment_rate", "Unemployment_rate", "DEMOG")
 table <- table0[myvars]
 
 setwd(Output)
