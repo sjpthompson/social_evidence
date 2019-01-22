@@ -4,7 +4,7 @@
 
 #Removing total variables (except occupations where we remove the non-totals) and only keeping 25-44 year-olds
 
-merge4 <- merge4e[ which(merge4e$AGE!=7 & merge4e$ETH!=7 & merge4e$AGE!=6 & merge4e$AGE!=5 & merge4e$AGE!=4 & merge4e$AGE!=1 & merge4e$SOC==10), ]
+merge4 <- merge4e[ which(merge4e$AGE==AGE & merge4e$ETH!=7 & merge4e$SOC==10), ]
 
 #putting into a long format
 

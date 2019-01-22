@@ -9,9 +9,13 @@ source("win_cleaning.R")
 
 ## Part two of the code creates the 'sector integration ratio' - 
 ## proportion of each demographic group working in a sector, 
-## divided by proportion of total age group working in a sector (just for 25-44 year-olds)
+## divided by proportion of total age group working in a sector
 ## Uses census ad-hoc table ct09152011, available at: 
 ## https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/employmentandemployeetypes/adhocs/009241ct09152011census
+
+# Use this to specify an age group
+
+AGE <- 1
 
 source("win_sectors.r")
 
@@ -19,10 +23,20 @@ source("win_sectors.r")
 ## proportion of each demographic group working in high-skilled occcupations in a given sector, 
 ## divided by the proportion of all workers in the sector working in high-skilled occupations
 
+# Use this to specify an age group
+
+AGE <- 1
+
 source("win_occupations.r")
 
 ## Part four of the code produces employment and unemployment rates, using A 
 ## TO ADD
+
+# Use this to specify an age group
+
+AGE <- 1
+
+source("win_employment.r")
 
 ## Part five of the code prints the three key tables as outputs using the flextable package
 
