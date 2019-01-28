@@ -13,6 +13,20 @@ setwd(Code)
 
 source("packages.R")
 
+#EDI Measures
+
+source("edimeasures.R")
+
+#EDI evidence base
+
+#Residential segregation
+
+#School segregation
+
 #Workforce integration
 
 source("win.R")
+
+#Social class
+
+#Survey analysis
