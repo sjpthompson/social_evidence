@@ -81,24 +81,52 @@ f98L1 <- na.omit(f98L)
 f08L1 <- na.omit(f08L)
 f18L1 <- na.omit(f18L)
 
-final98 <-
-  f98L1 %>% group_by(HSERIALP) %>% 
-  summarise(rwhite = sum(white),
-            rdegre = sum(degre),
-            rclass = sum(class),
-            count1 = count(white))
-
 #Bind rows
 
-final0 <- rbind(f98L, f08L, f18L)
+final0 <- rbind(f98L1, f08L1, f18L1)
 final1 <- na.omit(final0)
 
 #Summarise 
 
-totals <-
+totals0 <-
   final1 %>% group_by(year, HSERIALP) %>% 
   summarise(rwhite = sum(white),
             rdegre = sum(degre),
             rclass = sum(class),
-            count = count(class))
+            count = n())
 
+myvars <- c("weight", "year", "HSERIALP")
+weights0 <- final1[myvars]
+
+weights1 <-
+  weights0 %>% group_by(year, HSERIALP) %>%
+  summarise(weight = mean(weight))
+
+totals <- left_join(totals0, weights1, by = c("year","HSERIALP"))
+
+totals$mixeth <- 0
+totals$mixeth[(totals$rwhite==totals$count)] <- 1
+totals$mixeth[(totals$rwhite==0)] <- 2
+
+totals$mixdeg <- 0
+totals$mixdeg[(totals$rdegre==totals$count)] <- 1
+totals$mixdeg[(totals$rdegre==0)] <- 2
+
+totals$mixcla <- 0
+totals$mixcla[(totals$rclass==totals$count)] <- 1
+totals$mixcla[(totals$rclass==0)] <- 2
+
+mixeth <-
+  totals %>% group_by(year, mixeth) %>% 
+  summarise(freq = sum(weight),
+            count = n())
+
+mixdeg <-
+  totals %>% group_by(year, mixdeg) %>% 
+  summarise(freq = sum(weight),
+            count = n())
+
+mixcla <-
+  totals %>% group_by(year, mixcla) %>% 
+  summarise(freq = sum(weight),
+            count = n())

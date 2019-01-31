@@ -24,4 +24,6 @@ source("edimeasures_5.R")
 
 source("edimeasures_6.R")
 
-#7 
+#22 arts and culture participation
+
+source("edimeasures_22.R")
