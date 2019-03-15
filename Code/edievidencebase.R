@@ -1,7 +1,93 @@
 setwd(Data)
 
-myvars <- c("ILODEFR", "AAGE", "PWTA17C", "SEX", "ETHEWEUL", "GOVTOF", "HIQUL15D", "DISCURR13", "RELIGE", "STATR", "FTPTW","STUCUR")
+myvars <- c("NTNLTY12", "ILODEFR", "AAGE", "PWTA17C", "SEX", "ETHEWEUL", "GOVTOF", "LIMACT", "HIQUL15D", "DISCURR13", "DISEA", "RELIGE", "STATR", "FTPTW","STUCUR", "NSECMJ10", "NSECM10", "AGE", "LNGLST", "LIMITK", "LIMITA")
 aps <- read.dta13("aps_3yr_jan15dec17_eul.dta", select.cols = myvars, convert.factors = F)
+
+#Introduction figures
+
+#Disability
+
+aps$wlimit <- 0
+aps$wlimit[aps$AGE<16|aps$LNGLST>2] <- -9
+aps$wlimit[aps$LNGLST==1 & (aps$LIMITK==1|aps$LIMITA==1)] <- 1
+
+aps$disabled <- 0
+aps$disabled[aps$wlimit==1|aps$DISEA==1] <- 1
+aps$disabled[aps$wlimit<0 & aps$DISEA<0] <- -9
+
+aps$age1 <- 0
+aps$age1[aps$AAGE>1 & aps$AAGE<5] <- 1
+aps$age1[aps$AAGE>4 & aps$AAGE<10] <- 2
+aps$age1[aps$AAGE>9 & aps$AAGE<13] <- 3
+
+apsI1 <- aps[ which(aps$GOVTOF==8), ]
+
+TI1 <-
+  apsI1 %>% group_by(age1, disabled) %>% 
+  summarise(number = sum(PWTA17C))
+
+#Religion
+
+apsI2 <- aps[ which(aps$GOVTOF==8), ]
+
+TI2 <-
+  apsI2 %>% group_by(RELIGE) %>% 
+  summarise(number = sum(PWTA17C))
+
+#NS-SEC
+
+apsI2 <- aps[ which(aps$GOVTOF==8), ]
+
+TI2 <-
+  apsI2 %>% group_by(NSECMJ10) %>% 
+  summarise(number = sum(PWTA17C))
+
+TI3 <-
+  apsI2 %>% group_by(NSECM10) %>% 
+  summarise(number = sum(PWTA17C))
+
+#Appendix tables 1 - religion by age and by ethnicity
+
+aps$wlimit <- 0
+aps$wlimit[aps$AGE<16|aps$LNGLST>2] <- -9
+aps$wlimit[aps$LNGLST==1 & (aps$LIMITK==1|aps$LIMITA==1)] <- 1
+
+aps$disabled <- 0
+aps$disabled[aps$wlimit==1|aps$DISEA==1] <- 1
+aps$disabled[aps$wlimit<0 & aps$DISEA<0] <- -9
+
+aps$ageA <- 0
+aps$ageA[aps$AAGE==1] <- 1
+aps$ageA[aps$AAGE>1 & aps$AAGE<13] <- 2
+aps$ageA[aps$AAGE==13] <- 3
+
+aps$white <- -1
+aps$white[aps$ETHEWEUL>0 & aps$ETHEWEUL<4] <- 1
+aps$white[aps$ETHEWEUL>3 & aps$ETHEWEUL<17] <- 0
+
+aps$british <- -1
+aps$british[aps$NTNLTY12==926] <- 1
+aps$british[aps$NTNLTY12==372|aps$NTNLTY12==356|aps$NTNLTY12==586|aps$NTNLTY12==616|aps$NTNLTY12==997] <- 0
+
+apsA <- aps[ which(aps$GOVTOF==8), ]
+
+#Religion
+
+TA1 <-
+  apsA %>% group_by(RELIGE, ageA, white) %>% 
+  summarise(number = sum(PWTA17C))
+
+TA2 <-
+  apsA %>% group_by(disabled, ageA, white) %>% 
+  summarise(number = sum(PWTA17C))
+
+TA3 <-
+  apsA %>% group_by(british, ageA, white) %>% 
+  summarise(number = sum(PWTA17C))
+
+TA4 <-
+  apsA %>% group_by(NSECM10, ageA, white) %>% 
+  summarise(number = sum(PWTA17C))
 
 #Figure 3.1
 
